@@ -1,33 +1,45 @@
-export const getSecurePath = () => window.settings?.secure_path ?? '';
+export const getSettings=()=>window.settings??{};
+export const apiBase=()=>{const base=getSettings().base_url||'/';return `${base.replace(/\/$/,'')}/api/v2`;};
+export const getSecurePath=()=>getSettings().secure_path??'';
+const tokenKey='Xboard_access_token';
+export const getAccessToken=()=>localStorage.getItem(tokenKey)||'';
+export const setAccessToken=(token:string)=>localStorage.setItem(tokenKey,token);
+export const clearAccessToken=()=>localStorage.removeItem(tokenKey);
 
-export async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${getSecurePath()}${path}`, {
-    credentials: 'include',
-    headers: { Accept: 'application/json', 'Content-Type': 'application/json', ...(init?.headers ?? {}) },
-    ...init,
-  });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(payload?.message ?? `HTTP ${response.status}`);
-  if (payload?.code !== undefined && payload.code !== 200 && payload.code !== 0) throw new Error(payload.message ?? 'Request failed');
-  return payload;
+export async function request<T>(path:string, init:RequestInit={}):Promise<T>{
+ const headers=new Headers(init.headers); headers.set('Accept','application/json');
+ if(!(init.body instanceof FormData)) headers.set('Content-Type','application/json');
+ const token=getAccessToken(); if(token) headers.set('Authorization',token);
+ const response=await fetch(`${apiBase()}${getSecurePath()}${path}`,{credentials:'include',...init,headers});
+ const payload=await response.json().catch(()=>({}));
+ if(response.status===401||response.status===403) clearAccessToken();
+ if(!response.ok) throw new Error(payload?.message??`HTTP ${response.status}`);
+ if(payload?.code!==undefined&&payload.code!==200&&payload.code!==0) throw new Error(payload.message??'Request failed');
+ return payload;
 }
 
-export const adminApiBase = getSecurePath;
-export const unwrap = <T>(payload: any): T => payload?.data as T;
+export async function publicRequest<T>(path:string,init:RequestInit={}):Promise<T>{
+ const headers=new Headers(init.headers); headers.set('Accept','application/json'); if(!(init.body instanceof FormData)) headers.set('Content-Type','application/json');
+ const token=getAccessToken(); if(token) headers.set('Authorization',token);
+ const response=await fetch(`${apiBase()}${path}`,{credentials:'include',...init,headers});
+ const payload=await response.json().catch(()=>({})); if(response.status===401||response.status===403) clearAccessToken();
+ if(!response.ok) throw new Error(payload?.message??`HTTP ${response.status}`); return payload;
+}
+export const adminApiBase=getSecurePath;
+export const unwrap=<T>(payload:any):T=>payload?.data as T;
 
-export interface MachineLoadStatus { cpu: number; mem: { total: number; used: number }; disk: { total: number; used: number }; net_in_speed?: number; net_out_speed?: number; updated_at?: number; }
-export interface Machine { id: number; name: string; notes?: string | null; is_active: boolean; last_seen_at?: number | null; load_status?: MachineLoadStatus | null; servers_count: number; created_at?: string; updated_at?: string; }
-export interface MachineNode { id: number; name: string; type: string; host: string; port: number; show: boolean; enabled: boolean; sort: number; }
-
-export const machineApi = {
-  list: () => request<any>('/server/machine/fetch').then(unwrap<Machine[]>),
-  save: (body: Partial<Machine>) => request<any>('/server/machine/save', { method:'POST', body:JSON.stringify(body) }).then(unwrap),
-  remove: (id:number) => request<any>('/server/machine/drop', { method:'POST', body:JSON.stringify({id}) }).then(unwrap),
-  token: (id:number) => request<any>(`/server/machine/getToken?id=${id}`).then(unwrap<{token:string}>),
-  installCommand: (id:number) => request<any>(`/server/machine/installCommand?id=${id}`).then(unwrap<{command:string}>),
-  resetToken: (id:number) => request<any>('/server/machine/resetToken', {method:'POST',body:JSON.stringify({id})}).then(unwrap<{token:string}>),
-  nodes: (machineId:number) => request<any>(`/server/machine/nodes?machine_id=${machineId}`).then(unwrap<MachineNode[]>),
-  history: (machineId:number, limit=360, rangeHours=6) => request<any>(`/server/machine/history?machine_id=${machineId}&limit=${limit}&range_hours=${rangeHours}`).then(unwrap),
+export interface MachineLoadStatus{cpu:number;mem:{total:number;used:number};disk:{total:number;used:number};net_in_speed?:number;net_out_speed?:number;updated_at?:number}
+export interface Machine{id:number;name:string;notes?:string|null;is_active:boolean;last_seen_at?:number|null;load_status?:MachineLoadStatus|null;servers_count:number;created_at?:string;updated_at?:string}
+export interface MachineNode{id:number;name:string;type:string;host:string;port:number;show:boolean;enabled:boolean;sort:number}
+export const machineApi={
+ list:()=>request<any>('/server/machine/fetch').then(unwrap<Machine[]>),
+ save:(body:Partial<Machine>)=>request<any>('/server/machine/save',{method:'POST',body:JSON.stringify(body)}).then(unwrap),
+ remove:(id:number)=>request<any>('/server/machine/drop',{method:'POST',body:JSON.stringify({id})}).then(unwrap),
+ token:(id:number)=>request<any>(`/server/machine/getToken?id=${id}`).then(unwrap<{token:string}>),
+ installCommand:(id:number)=>request<any>(`/server/machine/installCommand?id=${id}`).then(unwrap<{command:string}>),
+ resetToken:(id:number)=>request<any>('/server/machine/resetToken',{method:'POST',body:JSON.stringify({id})}).then(unwrap<{token:string}>),
+ nodes:(machineId:number)=>request<any>(`/server/machine/nodes?machine_id=${machineId}`).then(unwrap<MachineNode[]>),
+ history:(machineId:number,limit=360,rangeHours=6)=>request<any>(`/server/machine/history?machine_id=${machineId}&limit=${limit}&range_hours=${rangeHours}`).then(unwrap),
 };
 
-declare global { interface Window { settings?: { secure_path?: string } } }
+declare global{interface Window{settings?:{base_url?:string;secure_path?:string}}}
