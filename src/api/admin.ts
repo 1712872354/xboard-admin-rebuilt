@@ -22,3 +22,4 @@ export const adminApi={
  auth:{login:(email:string,password:string)=>publicRequest<any>('/passport/auth/login',{method:'POST',body:JSON.stringify({email,password})}).then(unwrap),info:()=>publicRequest<any>('/user/info').then(unwrap)},
  machineApi,
 };
+export const admin=adminApi;
