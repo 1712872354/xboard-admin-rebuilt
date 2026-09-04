@@ -1,0 +1,29 @@
+import { machineApi } from './client';
+
+/**
+ * API surface reconstructed from XBoard's V2 AdminRoute.
+ * The individual page modules can progressively wrap these endpoints.
+ */
+export const adminApi = {
+  config: {
+    fetch: '/config/fetch', save: '/config/save', emailTemplate: '/config/getEmailTemplate', themeTemplate: '/config/getThemeTemplate', telegramWebhook: '/config/setTelegramWebhook', testMail: '/config/testSendMail',
+  },
+  mailTemplate: { list: '/mail/template/list', get: '/mail/template/get', save: '/mail/template/save', reset: '/mail/template/reset', test: '/mail/template/test' },
+  plan: { fetch: '/plan/fetch', save: '/plan/save', drop: '/plan/drop', update: '/plan/update', sort: '/plan/sort' },
+  serverGroup: { fetch: '/server/group/fetch', save: '/server/group/save', drop: '/server/group/drop' },
+  serverRoute: { fetch: '/server/route/fetch', save: '/server/route/save', drop: '/server/route/drop' },
+  serverManage: { nodes: '/server/manage/getNodes', update: '/server/manage/update', save: '/server/manage/save', drop: '/server/manage/drop', copy: '/server/manage/copy', sort: '/server/manage/sort', batchDelete: '/server/manage/batchDelete', batchUpdate: '/server/manage/batchUpdate', resetTraffic: '/server/manage/resetTraffic', batchResetTraffic: '/server/manage/batchResetTraffic', generateEchKey: '/server/manage/generateEchKey' },
+  serverMachine: { fetch: '/server/machine/fetch', save: '/server/machine/save', drop: '/server/machine/drop', resetToken: '/server/machine/resetToken', getToken: '/server/machine/getToken', installCommand: '/server/machine/installCommand', nodes: '/server/machine/nodes', history: '/server/machine/history' },
+  order: { fetch: '/order/fetch', update: '/order/update', assign: '/order/assign', paid: '/order/paid', cancel: '/order/cancel', detail: '/order/detail' },
+  user: { fetch: '/user/fetch', update: '/user/update', infoById: '/user/getUserInfoById', generate: '/user/generate', dumpCSV: '/user/dumpCSV', sendMail: '/user/sendMail', ban: '/user/ban', resetSecret: '/user/resetSecret', invite: '/user/setInviteUser', destroy: '/user/destroy' },
+  stat: { override: '/stat/getOverride', stats: '/stat/getStats', serverLastRank: '/stat/getServerLastRank', serverYesterdayRank: '/stat/getServerYesterdayRank', order: '/stat/getOrder', statUser: '/stat/getStatUser', ranking: '/stat/getRanking', record: '/stat/getStatRecord', trafficRank: '/stat/getTrafficRank' },
+  notice: { fetch: '/notice/fetch', save: '/notice/save', update: '/notice/update', drop: '/notice/drop', show: '/notice/show', sort: '/notice/sort' },
+  ticket: { fetch: '/ticket/fetch', reply: '/ticket/reply', close: '/ticket/close' },
+  coupon: { fetch: '/coupon/fetch', generate: '/coupon/generate', drop: '/coupon/drop', show: '/coupon/show', update: '/coupon/update' },
+  knowledge: { fetch: '/knowledge/fetch', category: '/knowledge/getCategory', save: '/knowledge/save', show: '/knowledge/show', drop: '/knowledge/drop', sort: '/knowledge/sort' },
+  payment: { fetch: '/payment/fetch', methods: '/payment/getPaymentMethods', form: '/payment/getPaymentForm', save: '/payment/save', drop: '/payment/drop', show: '/payment/show', sort: '/payment/sort' },
+  system: { status: '/system/getSystemStatus', queueStats: '/system/getQueueStats', queueWorkload: '/system/getQueueWorkload', queueMasters: '/system/getQueueMasters', failedJobs: '/system/getHorizonFailedJobs', auditLog: '/system/getAuditLog' },
+  theme: { themes: '/theme/getThemes', upload: '/theme/upload', delete: '/theme/delete', saveConfig: '/theme/saveThemeConfig', getConfig: '/theme/getThemeConfig' },
+  plugin: { types: '/plugin/types', list: '/plugin/getPlugins', upload: '/plugin/upload', delete: '/plugin/delete', install: '/plugin/install', uninstall: '/plugin/uninstall', enable: '/plugin/enable', disable: '/plugin/disable', config: '/plugin/config', upgrade: '/plugin/upgrade' },
+  machineApi,
+};
