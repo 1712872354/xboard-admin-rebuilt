@@ -1,6 +1,6 @@
 export type ModuleConfig={key:string;title:string;path:string;icon:string;fetch?:string;save?:string;drop?:string;fetchMethod?:'GET'|'POST'|'ANY'};
 export const modules:ModuleConfig[]=[
- {key:'system-config',title:'系统配置',path:'/config/system',icon:'settings-2',fetch:'/config/system',save:'/config/save'},
+ {key:'system-config',title:'系统配置',path:'/config/system',icon:'settings-2',fetch:'/config/fetch',save:'/config/save'},
  {key:'plugin',title:'插件管理',path:'/config/plugin',icon:'puzzle',fetch:'/plugin/getPlugins',save:'/plugin/config',drop:'/plugin/delete'},
  {key:'theme',title:'主题配置',path:'/config/theme',icon:'palette',fetch:'/theme/getThemes',save:'/theme/saveThemeConfig',drop:'/theme/delete'},
  {key:'notice',title:'公告管理',path:'/config/notice',icon:'megaphone',fetch:'/notice/fetch',save:'/notice/save',drop:'/notice/drop'},
@@ -10,7 +10,7 @@ export const modules:ModuleConfig[]=[
  {key:'node',title:'节点管理',path:'/server/manage',icon:'network',fetch:'/server/manage/getNodes',save:'/server/manage/save',drop:'/server/manage/drop'},
  {key:'group',title:'权限组管理',path:'/server/group',icon:'layers-3',fetch:'/server/group/fetch',save:'/server/group/save',drop:'/server/group/drop'},
  {key:'route',title:'路由管理',path:'/server/route',icon:'route',fetch:'/server/route/fetch',save:'/server/route/save',drop:'/server/route/drop'},
- {key:'plan',title:'套餐管理',path:'/finance/plan',icon:'package',fetch:'/plan/fetch',save:'/plan/save',drop:'/plan/drop',fetchMethod:'GET'},
+ {key:'plan',title:'套餐管理',path:'/finance/plan',icon:'package',fetch:'/plan/fetch',save:'/plan/save',drop:'/plan/drop'},
  {key:'order',title:'订单管理',path:'/finance/order',icon:'shopping-cart',fetch:'/order/fetch',save:'/order/update',drop:'/order/cancel',fetchMethod:'POST'},
  {key:'coupon',title:'优惠券管理',path:'/finance/coupon',icon:'ticket',fetch:'/coupon/fetch',save:'/coupon/update',drop:'/coupon/drop',fetchMethod:'POST'},
  {key:'gift-card',title:'礼品卡管理',path:'/finance/gift-card',icon:'credit-card',fetch:'/gift-card/templates',save:'/gift-card/update-template',drop:'/gift-card/delete-template',fetchMethod:'POST'},
